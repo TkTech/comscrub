@@ -31,7 +31,7 @@ jobs:
       - name: Install libclang
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang libclang-dev
+          sudo apt-get install -y clang libclang libclang-dev
 
       - name: Install dependencies
         run: |
