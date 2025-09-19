@@ -39,6 +39,6 @@ jobs:
 
       - name: Run tests
         env:
-          LIBCLANG_PATH=/usr/lib/llvm-18/lib
+          LIBCLANG_PATH: /usr/lib/llvm-18/lib
         run: |
           uv run pytest
