@@ -1,0 +1,28 @@
+[project]
+name = "comscrub"
+version = "0.1.0"
+description = "Strip comments from C-family sources using libclang"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "clang>=14; platform_system != 'Windows'", # Python bindings for libclang
+  "pytest>=8.4.2",
+]
+authors = [
+  {name = "Tyler Kennedy", email = "tk@tkte.ch" }
+]
+
+
+[project.scripts]
+comscrub = "comscrub.cli:main"
+
+[tool.uv]
+package = true
+
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["comscrub*"]
+exclude = ["tests*", "data*"]

@@ -1,0 +1,51 @@
+name: Publish to PyPI
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Build and publish (PyPI)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        run: |
+          python -m pip install --upgrade pip
+          pip install uv
+
+      - name: Verify tag matches project version
+        id: version
+        run: |
+          python - << 'PY'
+          import tomllib, os, sys
+          with open('pyproject.toml','rb') as f:
+              data = tomllib.load(f)
+          version = data.get('project',{}).get('version')
+          ref = os.environ.get('GITHUB_REF_NAME','')
+          tag_version = ref[1:] if ref.startswith('v') else ref
+          if not version:
+              print('::warning::No version found in pyproject.toml; skipping tag check')
+          else:
+              print(f'Project version: {version}  Tag: {tag_version}')
+              if version != tag_version:
+                  print('::error::Tag does not match project version')
+                  sys.exit(1)
+          PY
+
+      - name: Build distributions
+        run: |
+          uv build
+          uv publish
